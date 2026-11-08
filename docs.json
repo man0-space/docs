@@ -1,0 +1,358 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "man0",
+  "colors": {
+    "primary": "#38bdf8",
+    "light": "#38bdf8",
+    "dark": "#38bdf8"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "background": {
+    "color": {
+      "light": "#020305",
+      "dark": "#020305"
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter",
+      "source": "/fonts/inter.woff2",
+      "format": "woff2",
+      "weight": 650
+    },
+    "body": {
+      "family": "Inter",
+      "source": "/fonts/inter.woff2",
+      "format": "woff2",
+      "weight": 400
+    }
+  },
+  "favicon": "/branding/favicon.ico",
+  "logo": {
+    "light": "/branding/logo.svg",
+    "dark": "/branding/logo.svg",
+    "href": "https://app.man0.space"
+  },
+  "navbar": {
+    "links": [
+      {
+        "type": "github",
+        "href": "https://github.com/man0-space"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Open Man0",
+      "href": "https://app.man0.space"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "App",
+        "groups": [
+          {
+            "group": "Start",
+            "pages": [
+              "app/overview",
+              "app/account"
+            ]
+          },
+          {
+            "group": "Studio",
+            "pages": [
+              "app/vibe",
+              "app/canvas",
+              "app/catalog",
+              "app/coordinators",
+              "app/test-run"
+            ]
+          },
+          {
+            "group": "Workflows",
+            "pages": [
+              "app/workspace",
+              "app/run",
+              "app/publish",
+              "app/market",
+              "app/earn",
+              "app/spent"
+            ]
+          },
+          {
+            "group": "Funds",
+            "pages": [
+              "app/session",
+              "app/fund-swap"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "AI & workflows",
+        "groups": [
+          {
+            "group": "How it fits together",
+            "pages": [
+              "workflows/overview",
+              "workflows/stack",
+              "workflows/graph"
+            ]
+          },
+          {
+            "group": "Catalog and agents",
+            "pages": [
+              "workflows/catalog",
+              "workflows/models",
+              "workflows/connectors",
+              "workflows/vibe",
+              "workflows/coordinator"
+            ]
+          },
+          {
+            "group": "Execution",
+            "pages": [
+              "workflows/threads",
+              "workflows/proof",
+              "workflows/performance",
+              "workflows/storage"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "NEAR",
+        "groups": [
+          {
+            "group": "Accounts and Intents",
+            "pages": [
+              "near/overview",
+              "near/universal-accounts",
+              "near/authentication",
+              "near/execution",
+              "near/intents",
+              "near/intents-integration"
+            ]
+          },
+          {
+            "group": "Contracts",
+            "pages": [
+              "near/contracts",
+              "near/factory",
+              "near/workflow",
+              "near/reputation",
+              "near/validation",
+              "near/nft-events"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer",
+        "groups": [
+          {
+            "group": "Start",
+            "pages": [
+              "developer/overview",
+              "developer/authentication"
+            ]
+          },
+          {
+            "group": "Build and run",
+            "pages": [
+              "developer/workflows",
+              "developer/catalog",
+              "developer/streaming",
+              "developer/connectors",
+              "developer/publishing",
+              "developer/media"
+            ]
+          },
+          {
+            "group": "Payments and data",
+            "pages": [
+              "developer/payments",
+              "developer/analytics"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Endpoints",
+        "groups": [
+          {
+            "group": "Start",
+            "pages": [
+              "endpoints/overview"
+            ]
+          },
+          {
+            "group": "System",
+            "expanded": false,
+            "pages": [
+              "endpoints/system/health",
+              "endpoints/system/config",
+              "endpoints/system/options",
+              "endpoints/system/policy"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "expanded": false,
+            "pages": [
+              "endpoints/accounts/consent-get",
+              "endpoints/accounts/consent-accept",
+              "endpoints/accounts/user",
+              "endpoints/accounts/sign-out",
+              "endpoints/accounts/wallet-link",
+              "endpoints/accounts/wallet-links",
+              "endpoints/accounts/profile-get",
+              "endpoints/accounts/profiles",
+              "endpoints/accounts/profile-update"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "expanded": false,
+            "pages": [
+              "endpoints/authentication/passkey-options",
+              "endpoints/authentication/passkey-register",
+              "endpoints/authentication/passkey-verify",
+              "endpoints/authentication/email-start",
+              "endpoints/authentication/email-verify",
+              "endpoints/authentication/oauth-start",
+              "endpoints/authentication/oauth-callback",
+              "endpoints/authentication/telegram-verify"
+            ]
+          },
+          {
+            "group": "Catalog",
+            "expanded": false,
+            "pages": [
+              "endpoints/catalog/catalog",
+              "endpoints/catalog/coordinators",
+              "endpoints/catalog/coordinator-mint"
+            ]
+          },
+          {
+            "group": "Vibe and media",
+            "expanded": false,
+            "pages": [
+              "endpoints/vibe-and-media/vibe",
+              "endpoints/vibe-and-media/avatar",
+              "endpoints/vibe-and-media/banner",
+              "endpoints/vibe-and-media/pin-json",
+              "endpoints/vibe-and-media/pin-file",
+              "endpoints/vibe-and-media/upload"
+            ]
+          },
+          {
+            "group": "Workflows",
+            "expanded": false,
+            "pages": [
+              "endpoints/workflows/workflows-list",
+              "endpoints/workflows/workflow-save",
+              "endpoints/workflows/workflow-get",
+              "endpoints/workflows/workflow-delete",
+              "endpoints/workflows/workflow-publish",
+              "endpoints/workflows/market"
+            ]
+          },
+          {
+            "group": "Drafts",
+            "expanded": false,
+            "pages": [
+              "endpoints/drafts/draft-get",
+              "endpoints/drafts/draft-put",
+              "endpoints/drafts/draft-delete"
+            ]
+          },
+          {
+            "group": "Execution",
+            "expanded": false,
+            "pages": [
+              "endpoints/execution/draft-run",
+              "endpoints/execution/workflow-run",
+              "endpoints/execution/threads",
+              "endpoints/execution/thread",
+              "endpoints/execution/thread-watch"
+            ]
+          },
+          {
+            "group": "Analytics",
+            "expanded": false,
+            "pages": [
+              "endpoints/analytics/analytics",
+              "endpoints/analytics/analytics-earn"
+            ]
+          },
+          {
+            "group": "NEAR accounts",
+            "expanded": false,
+            "pages": [
+              "endpoints/near-accounts/balance",
+              "endpoints/near-accounts/deposit-ready",
+              "endpoints/near-accounts/spending-approve",
+              "endpoints/near-accounts/spending-reclaim",
+              "endpoints/near-accounts/near-view",
+              "endpoints/near-accounts/near-execute"
+            ]
+          },
+          {
+            "group": "Intents",
+            "expanded": false,
+            "pages": [
+              "endpoints/intents/intents-quote",
+              "endpoints/intents/intents-generate",
+              "endpoints/intents/intents-deposit",
+              "endpoints/intents/intents-status",
+              "endpoints/intents/svm-prepare",
+              "endpoints/intents/svm-broadcast"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "search": {
+    "prompt": "Search Man0"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view"
+    ],
+    "display": "header"
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/man0-space"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/app/overview"
+    },
+    {
+      "source": "/index",
+      "destination": "/app/overview"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/app/vibe"
+    }
+  ],
+  "api": {
+    "playground": {
+      "display": "simple"
+    },
+    "examples": {
+      "autogenerate": false
+    }
+  }
+}

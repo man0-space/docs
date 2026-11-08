@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Man0 colony symbol</title>
+  <desc id="desc">A swept Man o’ War sail connects three routes into one colony.</desc>
+  <g fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 28V37C20 43 12 43 12 49V54" stroke="#38bdf8"/>
+    <path d="M32 28V56" stroke="#10b981"/>
+    <path d="M44 28V37C44 43 52 43 52 49V54" stroke="#ff2e63"/>
+  </g>
+  <path d="M10 29C12 18 23 8 38 8L34 17C43 17 51 21 55 29H10Z" fill="#38bdf8"/>
+</svg>

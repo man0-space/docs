@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284 80" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Man0 logo</title>
+  <desc id="desc">Lowercase lettering drawn from JetBrains Mono with the rounded triangular zero retained in the full logo.</desc>
+  <defs>
+    <linearGradient id="zero-palette" x1="8" y1="8" x2="54" y2="62" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <g fill="#f8fafc" stroke="#f8fafc" stroke-width="5" stroke-linejoin="round" data-font-family="JetBrains Mono">
+    <path transform="translate(8.000 73) scale(0.12772 -.103)" d="M59 0V550H149V480H169L154 459Q154 505 179.0 532.5Q204 560 246 560Q291 560 315.5 525.0Q340 490 340 429L316 480H354L338 459Q338 505 363.5 532.5Q389 560 432 560Q483 560 512.0 521.5Q541 483 541 419V0H445V416Q445 447 431.5 464.0Q418 481 393 481Q368 481 354.5 464.5Q341 448 341 417V0H260V416Q260 448 246.0 464.5Q232 481 206 481Q181 481 168.5 464.5Q156 448 156 417V0Z"/>
+    <path transform="translate(80.924 73) scale(0.10815 -.103)" d="M245 -10Q159 -10 109.5 34.5Q60 79 60 156Q60 234 112.5 278.5Q165 323 257 323H410V374Q410 419 382.0 444.0Q354 469 303 469Q258 469 228.0 449.5Q198 430 193 398H87Q96 472 155.5 516.0Q215 560 306 560Q404 560 461.0 510.5Q518 461 518 376V0H413V101H395L413 121Q413 61 367.0 25.5Q321 -10 245 -10ZM277 73Q335 73 372.5 102.5Q410 132 410 178V250H259Q217 250 192.5 227.0Q168 204 168 164Q168 122 197.0 97.5Q226 73 277 73Z"/>
+    <path transform="translate(142.106 73) scale(0.11021 -.103)" d="M84 0V550H191V445H217L191 420Q191 486 230.0 523.0Q269 560 338 560Q420 560 469.0 507.5Q518 455 518 366V0H410V354Q410 408 381.0 437.0Q352 466 302 466Q251 466 221.5 435.5Q192 405 192 347V0Z"/>
+  </g>
+  <path transform="translate(208.524 0) scale(1.15)" d="M32 5C42.5 5 58 32 58 46.5C58 58.5 48.5 62 32 62C15.5 62 6 58.5 6 46.5C6 32 21.5 5 32 5ZM32 12C25.5 12 13 35 13 46.5C13 53.5 20 55 32 55C44 55 51 53.5 51 46.5C51 35 38.5 12 32 12Z" fill="url(#zero-palette)" fill-rule="evenodd"/>
+</svg>

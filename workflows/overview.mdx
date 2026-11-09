@@ -1,0 +1,21 @@
+---
+title: "AI and workflows"
+description: "How Man0 builds a graph, selects its resources and runs it."
+keywords: ["Man0", "AI and workflows", "workflows"]
+---
+
+A Man0 workflow is a saved graph of model, connector and agent steps. Each step has a catalog entry and instructions; connections identify the outputs that later steps need.
+
+Two agents handle different jobs. **Vibe** builds and edits the graph from your description. The **coordinator** executes it through the Compose runtime, using the resources selected on its steps.
+
+For a creator, that means you can turn a repeated task into a workflow, keep its inputs and results in conversations, and publish it for other people to run. For an integration, the graph and stream events give you the same building blocks through the API.
+
+| Part | What it does |
+| --- | --- |
+| [Catalog](/workflows/catalog) | Describes available models, connectors and agents |
+| [Vibe](/workflows/vibe) | Chooses resources and emits graph edits |
+| [Coordinator](/workflows/coordinator) | Follows dependencies, calls resources and produces the deliverable |
+| [Threads](/workflows/threads) | Preserve inputs, outputs and requests to continue a run |
+| [Proof](/workflows/proof) | Records the plan and per-step execution hashes |
+
+Start with the [stack](/workflows/stack) for the service boundaries, or the [graph format](/workflows/graph) to build a workflow directly.

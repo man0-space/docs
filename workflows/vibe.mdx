@@ -1,0 +1,30 @@
+---
+title: "Vibe\u2019s graph-building agent"
+description: "The prompt, discovery tools and graph patches behind Vibe."
+keywords: ["Man0", "Vibe\u2019s graph-building agent", "workflows"]
+---
+
+Vibe receives the user’s text, the current graph summary and the last six conversation messages. It sends that context to Nemotron through Nebius’s streaming chat-completions API.
+
+Each turn can request tools, observe their results and revise the graph. The tool dispatcher processes the requested calls in order, preserving the step IDs and references that later edits need.
+
+## Tool groups
+
+| Tools | Purpose |
+| --- | --- |
+| `read_categories_library`, `read_dag_library` | Read allowed task categories and graph-building patterns |
+| `query_catalog`, `models_find`, `connectors_find`, `agent_find` | Discover actual resources for the requested task |
+| `inspect_connector`, `list_coordinators` | Inspect actions and available coordinators |
+| `set_title`, `set_description`, `set_categories`, `set_coordinator` | Set workflow metadata |
+| `add_step`, `update_step`, `connect_steps`, `remove_step`, `arrange_canvas` | Edit the graph |
+| `generate_banner` | Start the workflow’s image generation |
+
+Resource search can combine query matches with frontier/latest model metadata. Connector inspection returns the schema needed to plan its action. Added steps carry resolved catalog entries; connection checks reject cycles and missing endpoints.
+
+## Live graph updates
+
+`POST /api/vibe` returns NDJSON. Status and text events describe progress; `patch` events update the Canvas with the same operations used by the builder’s tools.
+
+The patch union covers title, description, categories, coordinator and banner changes, plus step creation, updates, connections, removals and positions. `workflow_ready` includes the usable graph. `done` includes the final graph after pending banner work finishes.
+
+The browser can render those edits as they arrive because it doesn’t wait for one complete graph response. See the [streaming guide](/developer/streaming) for the event contract.

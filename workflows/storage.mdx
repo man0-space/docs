@@ -1,0 +1,30 @@
+---
+title: "Storage and state"
+description: "What Man0 saves in Neon, Valkey and IPFS."
+keywords: ["Man0", "Storage and state", "workflows"]
+---
+
+Man0 uses different stores for durable records, frequent updates and addressed files.
+
+| Store | Records |
+| --- | --- |
+| Neon account data | Identities, credentials, profiles, consent and linked wallets |
+| Neon workflow data | Saved graphs, publication terms, runs, coordinators and durable threads |
+| Valkey | Cached catalogs and profiles, current Canvas state and thread/composer state |
+| Pinata / IPFS | Uploaded attachments, generated images, workflow/coordinator cards and proofs |
+
+The frontend keeps Canvas editing responsive in local React state. After consent, it synchronizes the work in progress with a **400 ms** debounce. The current draft cache expires after **24 hours**; a saved workflow has its own durable record.
+
+## Cache behavior
+
+The backend cache helper combines process-local and shared caches. It supports single-flight fills and multi-key lookups, so repeated requests can reuse the same loaded record and profile batches can resolve together.
+
+Thread keys include user and workflow scope. Their seven-day cache has a database fallback. Saving a graph or changing a profile invalidates the affected listing/profile caches.
+
+## Edit conflicts
+
+Workflow writes use the last `modified` timestamp through `If-Match`. A conflicting write returns `409`, which lets the client reload the newer resource before applying its changes.
+
+## Media references
+
+Attachments carry a URL, type, MIME metadata, size and CID. Text and JSON uploads can include readable text in the returned attachment object. Runtime input receives those attachment references; generated files and delivery links become part of the final deliverable.

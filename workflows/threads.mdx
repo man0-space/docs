@@ -1,0 +1,29 @@
+---
+title: "Threads and continuation"
+description: "Persist the conversation, completed outputs and the inputs needed to continue."
+keywords: ["Man0", "Threads and continuation", "workflows"]
+---
+
+A workflow thread belongs to one user and one workflow. Its stable `threadId` connects the conversation to a runtime run, input, attachments and saved step outputs.
+
+| Status | Meaning |
+| --- | --- |
+| `running` | Execution is in progress |
+| `input_required` | The coordinator needs additional input |
+| `connector_required` | A service needs a connection or credential decision |
+| `succeeded` | A completed execution is available |
+| `failed` | The run stored an error |
+
+The record also stores the active step, coordinator, missing requirements, timestamps and execution result. Outputs use a map keyed by step ID, so a continuation can refer to the same graph nodes.
+
+## Resume
+
+Send the existing `threadId` to the run endpoint with the requested input or connector decisions. Man0 loads the saved outputs and passes them to the coordinator along with the new message.
+
+Runtime connection decisions also keep the original `runId` and `requestId`. Input requirements can carry a `proposalId` for the specialist request. Preserve those identities when building your own continuation UI.
+
+## Reconnect the display
+
+Read the thread with `GET /api/workflows/{id}/threads/{threadId}`. Its `/watch` endpoint starts with `thread:init`, replays saved step outputs and follows later changes. A terminal thread emits its result or stored pause/error.
+
+The API’s thread cache keeps entries for seven days and falls back to durable database records. Reopening a conversation reads that saved record; running it again requires an explicit run request.

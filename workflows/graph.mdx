@@ -1,0 +1,36 @@
+---
+title: "The workflow graph"
+description: "Step identity, dependency edges and validation rules."
+keywords: ["Man0", "The workflow graph", "workflows"]
+---
+
+`Flow` contains a workflow UUID, name, optional brief and banner, task categories, an optional coordinator, `nodes`, `edges` and an ISO `modified` timestamp.
+
+Each node uses `type: "step"` and a Canvas position. Its `data` contains the label, `kind`, instructions in `note`, and the selected catalog `entry`.
+
+```json
+{
+  "id": "analyze",
+  "type": "step",
+  "position": { "x": 0, "y": 0 },
+  "data": {
+    "label": "Analyze the quote",
+    "kind": "model",
+    "note": "Extract the main idea and tone."
+  }
+}
+```
+
+The selected entry supplies the resource identity and capability metadata. Its `kind` must match the step. A model’s display name helps the reader; its `entry.id` identifies the actual resource for execution.
+
+## Dependencies
+
+An edge stores its own `id`, `source` and `target` node IDs, with optional handle IDs and `type: "wire"`. The source output becomes context for the target step.
+
+Several target nodes can consume the same source. A node with multiple incoming edges receives the earlier results together. The coordinator’s plan identifies these dependencies and groups ready nodes into topological waves.
+
+The backend accepts up to **500 nodes** and **2,000 edges**. Node IDs, edge IDs and source-to-target pairs must be unique. Connections must refer to existing nodes, and the graph must be acyclic.
+
+## Saved identity
+
+`id` stays stable across edits. The server returns a new `modified` timestamp when it saves a workflow; send that value in `If-Match` when updating or publishing it. [Developer workflow requests](/developer/workflows) show the save flow.

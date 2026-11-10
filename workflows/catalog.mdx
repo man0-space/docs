@@ -1,0 +1,29 @@
+---
+title: "Catalog discovery"
+description: "How resource entries reach Vibe, Canvas and the execution runtime."
+keywords: ["Man0", "Catalog discovery", "workflows"]
+---
+
+The catalog supplies the resource descriptions that both Canvas and Vibe use. Man0 reads Compose model, connector and agent catalogs, then returns normalized entries from `GET /api/catalog/{kind}`.
+
+| Field | Use |
+| --- | --- |
+| `id`, `kind` | Resource identity and step role |
+| `name`, `description`, `logo` | Selection and display |
+| `groups`, `subgroups`, `modality`, `family` | Search and filtering |
+| `input`, `output`, `operations` | Supported data and operations |
+| `isFrontier`, `isLatest` | Model catalog labels |
+
+The operation metadata includes its modality, operation name, accepted source types, input/output types, pricing units and streaming flag. Models can expose several operations; choose one whose inputs match the earlier steps’ output.
+
+## Discovery during building
+
+Vibe can query `routes.compose.market/query`, search each resource catalog and inspect a connector’s action schema before adding it to a step. It resolves a suggested resource to an actual entry and preserves that identity in the graph.
+
+Coordinator cards come from locally saved coordinators and the Compose agents catalog. An agent’s wallet address identifies it for runtime calls; its NFT ID identifies the NEAR registration.
+
+## Refresh
+
+Man0 caches catalog responses for **300 seconds**. `refresh=1` or `refresh=true` asks for a refreshed list. Applications should use returned metadata for their pickers rather than maintaining a separate list of model names.
+
+See [catalog API examples](/developer/catalog) and [connector access](/workflows/connectors).

@@ -1,0 +1,36 @@
+---
+title: "The stack"
+description: "Where the app, API, inference, storage and NEAR services sit."
+keywords: ["Man0", "The stack", "workflows"]
+---
+
+The React app edits workflows and displays streamed execution. A Fastify API validates requests, manages account and workflow state, and connects the app to model inference, Compose and NEAR.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0b0f17","primaryTextColor":"#f8fafc","primaryBorderColor":"#38bdf8","lineColor":"#8b9bb4","secondaryColor":"#0e131c","tertiaryColor":"#090c12","edgeLabelBackground":"#020305","fontFamily":"Inter","fontSize":"16px"}}}%%
+flowchart LR
+  App["React app<br/>Canvas and run UI"] --> API["Fastify API"]
+  API --> Vibe["Nebius<br/>Vibe graph builder"]
+  API --> Compose["Compose runtime<br/>Models, connectors, agents"]
+  API --> DB["Neon<br/>Accounts, workflows, threads, runs"]
+  API --> Cache["Valkey<br/>Caches and run state"]
+  API --> IPFS["Pinata / IPFS<br/>Media, cards, proofs"]
+  API --> NEAR["NEAR<br/>Accounts, contracts, Intents"]
+```
+
+| Component | Responsibility |
+| --- | --- |
+| React, TypeScript and Vite | App rendering and local development/build tooling |
+| React Flow | Canvas nodes, edges, handles, viewport and graph interaction |
+| AG Grid / AG Charts Community | Creator workflow tables, activity and charts |
+| Fastify / Zod | HTTP routes, request validation, access checks and NDJSON streams |
+| Compose SDK | Catalog discovery, coordinator execution, resource calls, sessions, metering and payment settlement |
+| Nebius chat completions | Vibe’s tool-driven graph building |
+| Google image generation | Avatars and workflow banners |
+| Neon / Drizzle | Durable relational account, workflow and run records |
+| Valkey / ioredis | Shared caches and frequently updated composer state |
+| Pinata / IPFS | Addressed media files, workflow cards and proof bundles |
+| NEAR APIs and Intents SDKs | Universal Account provisioning, relayed calls and cross-chain routes |
+| Cloud Run | Containerized Node.js API hosting and HTTP concurrency |
+
+Inference runs through hosted services and the resources selected in the catalog. [Performance](/workflows/performance) covers streaming, caching and concurrency; [NEAR](/near/overview) covers the account and contract layer.

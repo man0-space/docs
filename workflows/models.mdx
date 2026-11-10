@@ -1,0 +1,28 @@
+---
+title: "Models and generated media"
+description: "Choose models by their inputs and outputs; understand the models Man0 calls directly."
+keywords: ["Man0", "Models and generated media", "workflows"]
+---
+
+Workflow models come from the current catalog. A step can select a text, image, audio, music, video or embedding resource, with its supported operations carried in the entry metadata.
+
+The model selected on a step and the model running the coordinator serve different jobs. A text coordinator can orchestrate an image generator and a music model in the same workflow by calling their resources.
+
+## Models Man0 selects directly
+
+| Model | Job |
+| --- | --- |
+| `nvidia/Nemotron-3-Ultra-550b-a55b` | Vibe’s workflow planning and graph-editing tool calls, through Nebius |
+| `gemini-nano-banana-2.1` | Generated avatars and workflow banners, through Google |
+| Coordinator’s selected text model | Instructions, resource calls and final deliverable through the Compose agent runtime |
+| Step’s catalog model | The specific transformation assigned to that step |
+
+Vibe uses streaming chat completions with thinking disabled, temperature **0.35** and a **4,096-token** output budget per turn. The builder has a maximum of **16 turns** to discover resources and edit the graph.
+
+## Image context
+
+Avatar and banner requests use the title, description and optional brand references. The media service adds Man0’s visual style and can include supported raster logo references in the generation input. It pins the resulting image to IPFS and returns its CID and display URL.
+
+Vibe can start banner generation while it finishes graph edits. Its `workflow_ready` event makes the graph available before the final `done` event includes the completed media work.
+
+For workflow steps, read the [catalog’s operation metadata](/workflows/catalog) rather than assuming every model accepts the same input fields.

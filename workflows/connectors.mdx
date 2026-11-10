@@ -1,0 +1,26 @@
+---
+title: "Connectors and account access"
+description: "Resource binding, credentials and continuation when a service needs access."
+keywords: ["Man0", "Connectors and account access", "workflows"]
+---
+
+A connector step binds a service from the catalog to a task. Man0 normalizes its entry ID before execution:
+
+| Entry ID | Binding |
+| --- | --- |
+| `near-intents` | NEAR Intents resource |
+| `onchain:{id}` | Cataloged onchain connector |
+| `account:{slug}` | Connected-account resource |
+| MCP connector slug | Native connector resource |
+
+The coordinator receives the selected connector reference and its action schemas. The instructions identify the output to send, the action to take and any fields it should read from earlier steps.
+
+## Access checks
+
+Man0 checks selected connectors before the run. Connected-account resources use the account connection; gated resources can require named credential variables. Those requirements include the connector name, reason and, where supplied, instructions for obtaining a credential.
+
+When access is needed, the run emits `connector:pause` and stores the requirements with its thread. The app opens the connection or credential interaction so the user can finish it.
+
+A runtime connection request carries `runId` and `requestId`. The client sends a `connectorDecisions` item with `decision: "connected"` or `"discarded"` when continuing the thread. Keep these identities from the original request so the runtime applies the decision to the right interaction.
+
+Dry runs suppress connector mutations while allowing the model and read work needed to test the workflow. See [continuation requests](/developer/connectors) and [thread states](/workflows/threads).

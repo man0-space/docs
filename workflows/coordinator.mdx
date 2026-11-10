@@ -1,0 +1,27 @@
+---
+title: "Workflow execution"
+description: "How the coordinator uses the graph and selected resources to produce a result."
+keywords: ["Man0", "Workflow execution", "workflows"]
+---
+
+The backend validates the graph, computes its topological waves, and builds the coordinator’s execution context. That context contains the user’s input, attachments, step instructions, dependencies and any outputs already saved in the thread.
+
+## Bind the chosen resources
+
+Model steps become explicit `model:{id}` references. Connector steps become normalized bindings with action schemas; Man0 fetches those schemas concurrently during preparation. The runtime receives these in `selectedResources`, so the selected step resource stays available as a native tool.
+
+The coordinator prompt names each step’s parents and requested output. It directs the agent to use model and connector tools for those steps, and proposals for specialist-agent steps.
+
+## Start the runtime
+
+Man0 starts one Compose `agent.stream` call with the coordinator wallet, message, thread identity, attachments, selected resources and constraints. It chooses `solo` mode when no specialist steps remain, and `swarm` mode when the graph still needs agent steps.
+
+Runtime events identify tool activity, generated text, receipts, missing input and connection requests. Man0 maps them back to the graph and emits the app’s step and activity events. Specialist work can continue through runtime watch streams using its run identity.
+
+## Continue and finish
+
+If the coordinator needs information or access, Man0 saves the pause and completed outputs. A continuation supplies those outputs with the new input and instructs the coordinator to continue pending work.
+
+The final deliverable combines sink-step outputs with generated assets and delivery links. Man0 reconciles runtime receipts, settles applicable service fees, records the execution and emits `result`.
+
+The [thread contract](/workflows/threads), [proof bundle](/workflows/proof) and [payment flow](/developer/payments) describe those records separately.

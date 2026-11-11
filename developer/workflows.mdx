@@ -1,0 +1,39 @@
+---
+title: "Save and edit workflows"
+description: "Create a graph, save a draft and use version timestamps for later writes."
+keywords: ["Man0", "API", "Save and edit workflows"]
+---
+
+Build a `Flow` using the [graph structure](/workflows/graph). The API workflow `id` is a UUID; node IDs are stable strings within the graph.
+
+## Save a graph
+
+Choose an actual entry returned by the catalog and place it on a step. This example creates a one-step saved draft:
+
+```js
+const flow = {
+  id: crypto.randomUUID(), name: 'Summarize a document',
+  nodes: [{ id: 'summary', type: 'step', position: { x: 0, y: 0 },
+    data: { label: 'Summarize', kind: 'model', entry: selectedModel,
+      note: 'Summarize the supplied document and preserve its source links.' } }],
+  edges: [], modified: new Date().toISOString()
+};
+const saved = await fetch(`${api}/workflows`, {
+  method: 'POST', headers: { 'Content-Type': 'application/json',
+    Authorization: `Bearer ${man0Token}` }, body: JSON.stringify(flow)
+}).then(r => r.json());
+```
+
+The response is a `Listing`: the saved Flow plus owner, creator display fields, publication state and nullable terms. Keep its returned `modified` value.
+
+## Update or publish
+
+Send `If-Match: <saved.modified>` on later writes. Saving uses `POST /api/workflows`; publication uses `/api/workflows/{id}/publish`, and deletion uses `DELETE /api/workflows/{id}`.
+
+When a write returns `409`, reload the current record and apply the intended edits to that version. Graph validation also checks unique nodes/routes, valid endpoints, matching resource kinds and acyclic connections.
+
+## Current Canvas versus saved drafts
+
+`GET`, `PUT` and `DELETE /api/draft` manage the current work in progress. `/api/workflows` manages saved drafts and published workflows. To test a supplied unsaved graph, send it as `flow` to `/api/draft/run` with the [run input and payment headers](/developer/streaming).
+
+You can also POST `{ prompt, flow, history }` to `/api/vibe` and apply its graph patches before saving. See [Vibe’s agent](/workflows/vibe) for the builder’s tools and event order.

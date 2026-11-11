@@ -1,0 +1,29 @@
+---
+title: "Streaming, concurrency and cost"
+description: "The controls that keep graph building and execution responsive."
+keywords: ["Man0", "Streaming, concurrency and cost", "workflows"]
+---
+
+Man0 keeps the HTTP app/API path separate from hosted inference and Compose execution. The API handles orchestration and streamed state while the selected resource performs its compute.
+
+## Show progress as it happens
+
+Vibe streams text and graph patches, and can return `workflow_ready` before banner generation finishes. Run streams carry step progress, runtime activity, generated text and billing updates. A client can display useful state before the final result exists.
+
+Man0 also prepares independent connector schemas concurrently and batches account/profile lookups. This reduces sequential network work around the model calls.
+
+## HTTP concurrency
+
+The Cloud Run API configuration accepts **80 requests per instance** and sets a maximum of **100 instances**. Each instance runs a Node.js container with **1 vCPU** and **512 MiB** of memory; requests have a configured **300-second** timeout.
+
+Async HTTP calls and NDJSON streams let an instance keep several requests in progress while it waits for providers or runtime events. Cloud Run distributes concurrent active HTTP requests across instances; model execution stays with the hosted providers and Compose runtime. Shared Valkey and Neon state lets another instance read the same saved workflow and thread.
+
+NEAR relaying has its own scheduling: **16 access-key slots**, per-key queues and least-loaded selection spread transaction submissions while keeping a key’s nonce sequence ordered. [Relayed execution](/near/execution) explains that path.
+
+## Avoid repeated work
+
+Catalog and profile caches reuse current metadata. Single-flight cache fills prevent identical lookups from each issuing their own upstream request. Thread continuation supplies completed outputs to the coordinator, while receipt identity deduplication keeps repeated events from adding the same charge twice.
+
+## Bound the work
+
+Graph size, attachment size, Vibe turns and request validation constrain each operation. Inference cost comes from the chosen resources and their metered work; the user’s spending session controls authorization. See [payments](/developer/payments) for fee calculation and settlement.

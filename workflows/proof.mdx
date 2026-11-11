@@ -1,0 +1,33 @@
+---
+title: "Execution proof"
+description: "The plan and step hashes attached to a workflow result."
+keywords: ["Man0", "Execution proof", "workflows"]
+---
+
+An execution proof connects the workflow plan to the steps that ran. Man0 accumulates the records during execution, then pins the bundle to IPFS.
+
+## Bundle structure
+
+`schemaVersion: "proof"` identifies the format. The bundle contains the runtime `runId`, workflow ID, optional NEAR workflow ID and coordinator wallet, the `planHash`, step records, inference run IDs and start/end timestamps.
+
+Each step record contains:
+
+| Field | Records |
+| --- | --- |
+| `stepId`, `kind`, `entryId` | Graph node and selected resource |
+| `provider`, `invokedTool` | Provider and tool used |
+| `inputHash`, `outputHash` | SHA-256 hashes of the step’s input and output |
+| `inferenceRunIds` | Associated inference runs |
+| `startedAt`, `endedAt`, `wallMs` | Execution timing |
+
+## Hashing
+
+Man0 canonicalizes JSON by sorting object keys, preserving array order and omitting undefined object values. It hashes that representation with SHA-256 and prefixes the hexadecimal digest with `0x`.
+
+The plan snapshot uses the same hashing function. To reproduce a hash, canonicalize the same value before hashing it; hashing the raw JSON text can produce a different result because of key order or whitespace.
+
+## Result links
+
+The execution response includes `proofCid` and `proofUrl` when the proof bundle has been pinned. The app’s **Proof** control opens the record. Billing remains in the execution’s bill and settlement fields, linked by the run identity.
+
+See [NEAR validation](/near/validation) for contract-level validation requests and evidence records.

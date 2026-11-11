@@ -1,0 +1,35 @@
+---
+title: "Authenticate your app"
+description: "Passkey, email and OAuth flows, API tokens and consent."
+keywords: ["Man0", "API", "Authenticate your app"]
+---
+
+Read `GET /api/config` before rendering sign-in options. Successful sign-in returns `{ token, user, expires }`; send the Man0 token as `Authorization: Bearer <token>` on account requests.
+
+## Passkeys
+
+Request `/api/auth/passkey/options` with `{ "mode": "create" }` or `{ "mode": "login" }`. Keep the returned challenge `id` and pass `options` to SimpleWebAuthn’s browser helper.
+
+```js
+const { id, options } = await request('/auth/passkey/options', {
+  mode: 'login'
+});
+const credential = await startAuthentication({ optionsJSON: options });
+const auth = await request('/auth/passkey/verify', { id, credential });
+```
+
+Here `request` is your JSON POST helper under `https://api.man0.space/api`. Registration uses `startRegistration` and `/auth/passkey/register`. The browser sends its configured origin; use the origin/RP allowed by the backend.
+
+## Email and OAuth
+
+For email, POST `{ email }` to `/api/auth/email/start`, then POST the returned `id` and six-digit `code` to `/api/auth/email/verify`.
+
+For OAuth, open `/api/oauth/{provider}/start?origin=<your-origin>&mode=auth` in a popup. The callback sends an `oauth` message with `ok` and the authentication payload. Check the message origin and close the popup after consuming the result.
+
+`mode=link` uses the profile-linking flow. Telegram is a linking provider. The same OAuth operations also have `/api/auth/oauth` and `/oauth` aliases.
+
+## Policy acceptance
+
+`GET /api/policy` returns the current `hash`, sections and checks. After the user reviews them, POST `{ policy: hash, terms: true, privacy: true }` to `/api/consent` with the Man0 token.
+
+Protected account reads use that token. Workflow writes, media generation and NEAR execution require current consent as well. `DELETE /api/auth` revokes the authentication session; payment authorization uses a separate [Compose spending key](/developer/payments).

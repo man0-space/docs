@@ -1,0 +1,33 @@
+---
+title: "Build with Man0"
+description: "Use the catalog, graph and execution APIs in your own app."
+keywords: ["Man0", "API", "Build with Man0"]
+---
+
+The Man0 API exposes the app’s workflow graph, Vibe builder, saved conversations, creator analytics and NEAR account operations.
+
+Base URL: **`https://api.man0.space`**. Routes use `/api`; ordinary requests return JSON. Vibe and workflow execution use newline-delimited JSON streams.
+
+## Read the public catalog
+
+```js
+const api = 'https://api.man0.space/api';
+const models = await fetch(`${api}/catalog/models`).then(r => r.json());
+const workflows = await fetch(`${api}/market`).then(r => r.json());
+```
+
+The first response is an array of resource entries. Market returns published workflow listings with their graph, terms and creator data. Use returned IDs for selection and follow-up requests.
+
+## Choose your integration
+
+| Task | Guide |
+| --- | --- |
+| Sign in and read an account | [Authentication](/developer/authentication) |
+| Create or edit a graph | [Workflows](/developer/workflows) |
+| Render resource selection | [Catalog](/developer/catalog) |
+| Build a live run UI | [Streaming](/developer/streaming) |
+| Connect services and resume | [Connectors](/developer/connectors) |
+| Authorize and settle runs | [Payments](/developer/payments) |
+| Read creator activity | [Analytics](/developer/analytics) |
+
+The [endpoint reference](/endpoints/overview) holds the request and response schemas. [Source](https://github.com/man0-space) and the [workflow stack](/workflows/stack) cover the implementation.

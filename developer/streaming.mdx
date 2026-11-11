@@ -1,0 +1,47 @@
+---
+title: "Stream and resume a run"
+description: "Read NDJSON events, preserve thread IDs and distinguish pause from completion."
+keywords: ["Man0", "API", "Stream and resume a run"]
+---
+
+Vibe, draft runs, workflow runs and thread watching return `application/x-ndjson`. Each line is one JSON event; a network chunk can contain part of a line or several lines, so keep an input buffer when decoding.
+
+## Start execution
+
+```js
+const response = await fetch(`${api}/workflows/${workflowId}/run`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json',
+    Accept: 'application/x-ndjson', Authorization: `Bearer ${man0Token}`,
+    'x-compose-key': composeSessionToken },
+  body: JSON.stringify({ input: 'Summarize the attached document.',
+    attachments, dry: false })
+});
+```
+
+Run input accepts text up to 32,000 characters, up to eight attachments, `dry`, optional `threadId`, nullable `coordinator` and up to 16 connector decisions. Draft execution also requires `flow`.
+
+## Run events
+
+| Events | Client action |
+| --- | --- |
+| `thread:init` | Save `threadId` and `runId` |
+| `step:start`, `step:done` | Update the graph’s active step and outputs |
+| `sse:activity`, `sse:delta` | Render runtime actions and generated text |
+| `sse:bill` | Update the compute bill and itemized charges |
+| `input:pause`, `connector:pause` | Show the requested input or connection |
+| `result` | Store the completed `execution` |
+| `error` | Read its code, message and any continuation requirements |
+| `ping` | Keep the display connection active |
+
+Check the HTTP status before reading the stream. Once streaming has started, an `error` event can describe a pause or failure inside a successful HTTP response. The terminal event determines the run outcome.
+
+## Continue or reconnect
+
+For a pause, call the same run endpoint with the saved `threadId` and new input or [connector decisions](/developer/connectors). For display reconnection, read the saved thread or open `/api/workflows/{id}/threads/{threadId}/watch`.
+
+The final execution contains output, step traces, itemized bills, compute/service-fee totals, transaction/payment identity and optional proof links. [Payment fields](/developer/payments) explain their units.
+
+## Vibe events
+
+Vibe emits `status`, `delta`, `patch`, `banner_start`, `workflow_ready`, `done` and `error`. Apply patches to the current graph and use the included Flow on the ready/done events. See [the Vibe endpoint](/endpoints/vibe-and-media/vibe) for the complete patch union.

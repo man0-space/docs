@@ -1,0 +1,31 @@
+---
+title: "Use the catalog"
+description: "Fetch resource entries and preserve their identity in workflow steps."
+keywords: ["Man0", "API", "Use the catalog"]
+---
+
+`GET /api/catalog/models`, `/connectors` and `/agents` return arrays of entries. Read their IDs and capabilities when building a picker or constructing a workflow.
+
+```js
+const entries = await fetch(`${api}/catalog/models?refresh=1`)
+  .then(r => r.json());
+const textModels = entries.filter(entry =>
+  entry.input?.includes('text') || entry.modality === 'text'
+);
+```
+
+Use the returned entry itself in `node.data.entry`. Its `kind` must match `node.data.kind`; the resource `id` identifies execution, while `name` and `logo` support display.
+
+## Operation metadata
+
+`operations` can include more than one capability. Each capability supplies `modality`, `operation`, `sourceTypes`, `input`, `output`, `pricingUnits` and `streamable`. Match the operation to your workflow’s actual input and expected output.
+
+Entry groups, subgroups and model-family labels support filtering. `isFrontier` and `isLatest` reflect catalog metadata. The [catalog flow](/workflows/catalog) describes discovery and refresh behavior.
+
+## Coordinators and categories
+
+`GET /api/coordinators` returns available coordinator cards. Use the selected card as `flow.coordinator`, or pass a nullable coordinator override when starting a run.
+
+`GET /api/options` returns category groups with task IDs, labels and descriptions, plus `maxTaskTags`. Use canonical task IDs when saving metadata or publishing.
+
+Vibe’s discovery uses the same resources through its tools, so your own picker can produce the same graph entries as a Vibe-built workflow.

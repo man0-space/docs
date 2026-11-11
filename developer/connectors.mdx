@@ -1,0 +1,42 @@
+---
+title: "Connect and continue"
+description: "Handle account connections, credential requirements and runtime decisions."
+keywords: ["Man0", "API", "Connect and continue"]
+---
+
+Connector requirements arrive before or during execution. They include the resource entry and slug, the reason access is needed, and the relevant account or named credential variables.
+
+Render the returned requirement and open the matching connection flow. Man0’s app uses the Compose SDK for connected accounts, MCP credential schemas, credential storage and runtime decisions.
+
+## SDK operations
+
+| SDK area | Use |
+| --- | --- |
+| `connectors.status` | Read the user’s connection state |
+| `connectors.accounts.list`, `.connect`, `.status`, `.grant` | Check an account, open its authentication flow, poll completion and grant access |
+| `connectors.mcps.get` | Read a connector’s credential variable descriptions |
+| `connectors.gated.connect`, `.grant` | Submit named credential variables and grant the connector access |
+| Man0 run endpoint | Resume the saved thread with its connector decision and runtime request identity |
+
+Use the user’s authenticated Compose context for these operations. [Spending sessions](/developer/payments) describe how Man0 attaches that context.
+
+## Resume the Man0 thread
+
+Once the account is connected, send the saved thread ID and decision:
+
+```json
+{
+  "threadId": "the-thread-id-from-thread:init",
+  "connectorDecisions": [{
+    "runId": "the-request-run-id",
+    "requestId": "the-connection-request-id",
+    "decision": "connected"
+  }]
+}
+```
+
+Use `discarded` when the user declines the request. These strings refer to the identities supplied by the original runtime requirement; don’t create new IDs for a continuation.
+
+Missing input follows the same thread flow: render the supplied questions and accepted inputs, then submit the answer with `threadId`. Man0 loads completed outputs into the resumed coordinator context.
+
+See [connector bindings](/workflows/connectors) for normalized entry IDs, and [streaming](/developer/streaming) for pause and terminal events.

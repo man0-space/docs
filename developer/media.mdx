@@ -1,0 +1,32 @@
+---
+title: "Upload files and generate images"
+description: "Prepare attachments, IPFS metadata, avatars and workflow banners."
+keywords: ["Man0", "API", "Upload files and generate images"]
+---
+
+Man0 media endpoints return addressed files that the graph and run composer can reuse. Send base64 file bytes in JSON; run attachment uploads accept a data-URL prefix as well.
+
+## Run attachments
+
+POST `fileBase64`, `fileName` and optional `mimeType` to `/api/uploads`. The file limit is **20 MiB**; the endpoint classifies image, audio, video, PDF, file, text or JSON from MIME metadata and the file name.
+
+```js
+const attachment = await post('/uploads', {
+  fileBase64, fileName: 'brief.pdf', mimeType: 'application/pdf'
+});
+const input = { input: 'Summarize this brief.', attachments: [attachment] };
+```
+
+The response contains `type`, `url`, `name`, `mimeType`, `size`, `cid` and `uri`; readable text/JSON can include `text`. Add that object to a run’s `attachments` array, with a maximum of eight entries.
+
+## Metadata and other files
+
+`/api/ipfs/pin/json` accepts a JSON `content` object, `name` and optional string `keyvalues`. `/api/ipfs/pin/file` accepts base64 file data, file name, MIME type and optional pin metadata.
+
+Both return `cid`, `uri`, `url` and pinned size. Use the URI in metadata cards and the HTTP URL for display.
+
+## Generated avatars and banners
+
+`/api/generate-avatar` and `/api/generate-banner` accept optional `title`, `description` and up to 12 logo hints of `{ name, url? }`. They return `{ imageUrl, cid }`.
+
+The [model and media page](/workflows/models) describes the generator and its brand context. All these write endpoints require the Man0 authentication token and current consent.

@@ -1,0 +1,35 @@
+---
+title: "Workflow contract"
+description: "Ownership, agent licenses, nested workflows, units, requests and leases."
+keywords: ["Man0", "NEAR", "Workflow contract"]
+---
+
+`mint_workflow` creates an NFT with title, description, banner, card URI, unit supply, coordinator settings and lease configuration. The record keeps its creator and owner, agent-license total and request/lease state.
+
+The app’s ownership mint supplies **1,000,000 units**, disables leasing and records the selected coordinator. Published API terms retain the returned `chainWorkflowId`, card CID, contract and transaction hash.
+
+## Agent membership and units
+
+`add_agent_to_workflow` adds a licensed Factory agent; `remove_agent_from_workflow` removes it. The contract stores the license price for each workflow/agent pair and maintains the workflow’s total license price.
+
+Factory synchronization calls `consume_license`. Its private callback updates cached permissions and price data, or removes the membership if license consumption fails.
+
+`set_coordinator` updates coordinator settings. `consume_unit` increments used units while enforcing the workflow’s unit supply. Views include `get_workflow`, `get_workflow_agents`, `get_agent_count`, `is_complete` and creator/workflow indexes.
+
+## Nested ownership
+
+`propose_child` places a child NFT into a parent’s pending list. The parent owner accepts or rejects it with `accept_child` or `reject_child`; `reject_all_children` handles a bounded batch, and `unnest_child` removes an accepted child.
+
+The contract distinguishes direct ownership from the root account owner. `direct_owner_of` returns the immediate parent/account, while `owner_of` walks nested ownership. Cycle checks and a **32-level** depth bound constrain nesting. Pending children default to a **128-entry** limit, configurable with `set_max_pending_children`.
+
+## Requests for agents
+
+`create_rfa` records an open request with required skills and a funded offer. Creators submit agents with `submit_agent`; the publisher accepts a submission with `accept_agent`, which records fulfillment and schedules the creator payout. `cancel_rfa` resolves the request and schedules its refund.
+
+Read requests and submissions with `get_rfa`, `get_rfa_for_workflow`, `get_submissions` and the open/publisher indexes.
+
+## Leases and token settlement
+
+`update_lease_settings` defines the allowed duration and creator share, capped at **20%**. `create_lease`, `terminate_lease` and `expire_lease_if_needed` manage active leases. `calculate_fee_split` and `distribute_lease_fees` divide the payment between creator and leaser.
+
+The NEP-141 receiver accepts tagged `mint_workflow`, `add_agent_to_workflow`, `create_rfa` and `distribute_lease_fees` actions from the configured payment token. Mint/add actions return unused token amounts for refund. Payment amounts use token atomic units.

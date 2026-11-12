@@ -1,0 +1,34 @@
+---
+title: "Reputation contract"
+description: "Feedback values, tags, revocation, responses and aggregates for registered agents."
+keywords: ["Man0", "NEAR", "Reputation contract"]
+---
+
+Reputation associates feedback with a Factory agent ID and the submitting account. `give_feedback` accepts a signed fixed-point value, its decimal precision, two tags, an endpoint and an optional feedback URI/hash.
+
+The contract supports **0–18 decimal places**. Values use `I128` decimal strings; a supplied hash must encode 32 bytes. URI and numeric checks run before the record is created.
+
+## Permission checks
+
+The contract checks the submitting account against Factory agent permissions, through the configured cross-contract lookup or permission cache. Agent owners, creators, associated wallets and approved operators can’t submit self-feedback for that agent.
+
+The cross-contract path records feedback in a private callback after reading permissions. A per-agent/client index identifies each feedback record.
+
+## Read and respond
+
+| Method | Use |
+| --- | --- |
+| `read_feedback` | Read one agent/client feedback record |
+| `read_all_feedback` | Read filtered feedback records |
+| `get_last_index` | Find the last index for an agent/client pair |
+| `get_clients` | Read accounts that submitted feedback |
+| `append_response` | Add a response URI/hash to feedback |
+| `get_response_count`, `get_responders` | Inspect feedback responses |
+
+The original author uses `revoke_feedback` to mark their record revoked. Revocation preserves the record while excluding its value from aggregates.
+
+## Aggregation
+
+`get_summary` filters by client and tags, excludes revoked values and normalizes the remaining values to 18-decimal fixed-point form for averaging. It returns the count, average value and decimal precision; the precision follows the most common input precision, with the lower precision selected on a tie.
+
+Use the URI and hash to associate a feedback entry with its supporting material. The [validation contract](/near/validation) has a separate request/response record for task evidence.

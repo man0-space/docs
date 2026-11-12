@@ -1,0 +1,33 @@
+---
+title: "Publish workflow ownership"
+description: "Pin the workflow card, mint its NEAR record and publish the saved listing."
+keywords: ["Man0", "API", "Publish workflow ownership"]
+---
+
+The app’s publication flow joins a saved API workflow to its NEAR ownership record. Keep the API UUID and `chainWorkflowId` distinct.
+
+## Publication sequence
+
+Save the graph first. Build its workflow metadata card, pin it with `/api/ipfs/pin/json`, and use the returned `ipfs://` URI in the Workflow contract mint.
+
+The contract’s `mint_workflow` receives its title, description, banner, card URI, unit supply, lease settings, coordinator settings and agent IDs. Its transaction outcome returns the workflow token ID and logs.
+
+Then POST publication terms to `/api/workflows/{id}/publish`, with the saved version in `If-Match`:
+
+```json
+{
+  "creatorFee": 2,
+  "tasks": ["Summarization"],
+  "description": "Summarize a document and send the result to Notion."
+}
+```
+
+Attach the returned `cid`, `chainWorkflowId`, `txHash` and `contractId` when the ownership mint is part of the publication. The endpoint returns the published `Listing`.
+
+The app provides the ownership-mint option and uses the contract settings described in [Workflow](/near/workflow). Its creator fee is an execution service fee; an agent’s contract license price belongs to the [Factory licensing](/near/factory#licenses) flow.
+
+## Coordinator cards
+
+`POST /api/coordinators/mint` accepts the name, image URL, personality and selected model, plus optional contract/network selection. The backend pins the card, calls Factory `register_agent`, sets the agent wallet and saves the coordinator record for reuse.
+
+The response includes its `agentId`, `walletAddress`, card CID, contract and transaction hash. Use the wallet address for runtime coordination and the agent ID for contract references.

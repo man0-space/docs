@@ -1,0 +1,31 @@
+---
+title: "Agent Factory"
+description: "Register agent identities, manage their licenses and associate runtime wallets."
+keywords: ["Man0", "NEAR", "Agent Factory"]
+---
+
+Factory creates NFT-backed agent identities. Each record has an owner, original creator, DNA hash, metadata URI, license configuration and an optional runtime wallet.
+
+## Identity and metadata
+
+`mint_agent` creates an agent from its DNA and license settings. `register_agent` creates a registered identity from a URI and metadata entries; Man0 uses this path for coordinator cards.
+
+`set_agent_wallet` associates the runtime wallet. The owner or an approved operator can update it; an optional Ed25519 signature and deadline support signed wallet association. `clear_agent_wallet` removes the association. NFT transfer clears the wallet so the new owner can set the intended execution address.
+
+`set_metadata` and `remove_metadata` manage keyed byte metadata. Views include `get_agent`, `get_agent_data`, `agent_uri`, `get_agent_wallet`, `get_metadata` and `get_metadata_keys`. `get_agent_permissions` returns the owner/creator, wallet, operator state and license information for other contracts.
+
+## Licenses
+
+`consume_license` records a license for the tuple `(agent_id, workflow_contract, workflow_id)`. Authorized consumer contracts or the administrator invoke it. Finite license supplies enforce their remaining count; **0** licenses means unlimited supply.
+
+`revoke_license` deactivates the tuple and returns its count to the available supply. `update_price` changes the license price. Clients can query remaining supply, active licenses and individual records with `get_remaining_licenses`, `has_active_license` and `get_license`.
+
+Workflow agent-license purchases split the price **90% to the creator** and **10% to the treasury** through the Workflow payment path. The license registry and the purchase transfers have separate contract calls.
+
+## Cloning and warping
+
+`clone_agent` accepts cloneable original agents and records the original-to-clone relationship. `can_clone`, `get_clones_of` and `get_original_agent` expose that relationship. Clones don’t become cloneable originals.
+
+`warp_agent` records an imported agent using its original hash, optional original creator and license settings. `get_warped_creator_split` computes **80% warper**, **10% original creator** and **10% treasury** shares. If the original creator hasn’t been identified, the contract tracks their unclaimed share during a **365-day** claim window; the treasury can assign it to the verified creator with `transfer_unclaimed_royalties`.
+
+See [NFT methods](/near/nft-events) for ownership and enumeration, and [Workflow](/near/workflow) for agent membership.

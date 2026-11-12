@@ -1,0 +1,30 @@
+---
+title: "Contract roles"
+description: "Agent identity, workflow composition, reputation and validation on NEAR."
+keywords: ["Man0", "NEAR", "Contract roles"]
+---
+
+Man0’s Rust contracts separate agent identity from workflow ownership and execution evidence.
+
+| Contract | Records and actions |
+| --- | --- |
+| [Factory](/near/factory) | Agent registration, DNA, wallet metadata, cloning, warp records and licenses |
+| [Workflow](/near/workflow) | Workflow NFTs, licensed agent membership, nesting, units, RFAs and leases |
+| [Reputation](/near/reputation) | Signed feedback values, tags, revocation and responses |
+| [Validation](/near/validation) | Task validation requests and validator evidence |
+
+Factory and Workflow expose the NEAR NFT standards for ownership, metadata, approval and enumeration. The shared `man0` crate defines typed records, fixed-point math, URI/hash validation and event formats.
+
+## App publishing
+
+The app pins a workflow card, mints its Workflow NFT and publishes the saved graph with the returned chain ID and transaction hash. Coordinator creation registers an agent card in Factory and associates its runtime wallet.
+
+The onchain ID and the API workflow UUID identify different records. `chainWorkflowId` joins the saved API graph to its Workflow NFT; `agentId` joins a coordinator card to its Factory NFT. The coordinator’s `walletAddress` identifies runtime execution.
+
+## Calls and values
+
+Use the configured contract IDs with the [view and execute endpoints](/near/execution). NEAR SDK `U128`, `U64` and `I128` wrappers use decimal strings in JSON; metadata byte values use base64.
+
+Read calls expose the current record. Change calls enforce their contract permissions and produce NEP-297 logs. See [NFT methods and events](/near/nft-events) for client/indexer integration.
+
+NEAR background: [smart contracts](https://docs.near.org/smart-contracts/what-is) and [global contracts](https://docs.near.org/smart-contracts/global-contracts).

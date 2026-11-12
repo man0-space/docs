@@ -1,0 +1,21 @@
+---
+title: "NEAR in Man0"
+description: "Accounts, cross-chain funding and workflow ownership."
+keywords: ["Man0", "NEAR", "NEAR in Man0"]
+---
+
+NEAR connects the Man0 account to its funds and published workflow records. Universal Accounts give each identity a deposit wallet and a spending wallet; NEAR Intents routes supported cross-chain deposits, swaps and withdrawals.
+
+The contracts record agent identities, workflow ownership, licenses, reputation and validation evidence. Workflow execution still uses the selected models and connectors through the [Compose runtime](/workflows/coordinator).
+
+| Area | Purpose |
+| --- | --- |
+| [Universal Accounts](/near/universal-accounts) | Deterministic account initialization with shared wallet code |
+| [Authentication](/near/authentication) | Verify app identity and issue an API session |
+| [Relayed execution](/near/execution) | Submit signed wallet requests and manage transaction nonces |
+| [NEAR Intents](/near/intents) | Route funds across supported networks |
+| [Contracts](/near/contracts) | Register agents and publish workflow ownership and related records |
+
+Mainnet Intents uses `intents.near` with OneClick. Testnet uses Tidepool’s route and token discovery. The backend selects the provider for the configured network.
+
+For API calls, start with the [NEAR account endpoints](/endpoints/near-accounts/balance) or [Intents integration](/near/intents-integration). The app walkthrough is in [Fund / Swap](/app/fund-swap).

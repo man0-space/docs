@@ -1,0 +1,44 @@
+---
+title: "Read usage and creator earnings"
+description: "Fetch workflow records and inference telemetry for your own dashboard."
+---
+
+Man0 exposes account workflow activity and creator earnings through authenticated API routes. Its usage dashboard also reads inference telemetry directly through the Compose SDK.
+
+## Workflow activity
+
+`GET /api/analytics` returns `filters`, request and latency totals, billing totals, timeline buckets, requests and settlements. Use `from`, `to`, `interval`, `networks` and `limit` to select the records.
+
+Amounts ending in `Atomic` are decimal strings of USDC atomic units. Keep them as integers for calculations; divide by `1000000` when formatting dollar values.
+
+The [endpoint reference](/endpoints/analytics/analytics) carries the complete query and response structures.
+
+## Creator earnings
+
+`GET /api/analytics/earn` scopes the result to the authenticated creator. It accepts an ISO timestamp window and a `limit` up to **1,000**, with **500** as the default.
+
+```js
+const earnings = await fetch(`${api}/analytics/earn?limit=500`, {
+  headers: { Authorization: `Bearer ${man0Token}` }
+}).then(response => response.json());
+```
+
+`workflows` contains metadata and per-workflow aggregates: runs, paid runs, success/failure counts, earned and charged amounts, duration and latest activity. `events` contains the individual run records, runner and network, compute/royalty amounts, transaction hash and proof CID.
+
+The aggregates use the returned run window and record limit. Workflow summaries also include the creator’s saved workflows, so a dashboard can show entries with no activity in that window.
+
+## Inference usage and live updates
+
+The app calls `compose.analytics.get(filters, { userAddress })` for its spending wallet, account and linked wallet subjects. It merges their timelines and deduplicates request and settlement identities before calculating model usage, token totals, latency percentiles and modality breakdowns.
+
+Request and settlement pagination use separate cursors for each subject. `compose.analytics.subscribe({ userAddress, networks, signal })` provides live events; the app groups refreshes with a **350 ms** debounce and also refreshes when the window gains focus or comes online.
+
+Use the authenticated Compose context described in [payments](/developer/payments) for SDK operations. These SDK telemetry calls are separate from Man0’s workflow analytics routes.
+
+## AG Grid and AG Charts
+
+The app uses **AG Grid Community** (`ag-grid-community`, `ag-grid-react`) for workflow comparisons, model usage and activity records. Column definitions format amounts, statuses, media and explorer links; stable `getRowId` values retain row identity when data changes. Search and sorting operate on the prepared row data, and expanded views expose more detail.
+
+**AG Charts Community** (`ag-charts-community`, `ag-charts-react`) draws the timelines and category or modality breakdowns. React supplies the filtered data and series settings; custom tooltips show the underlying values using Man0’s colors and units.
+
+The tables and charts share the same selected window and network filters. API consumers can use the returned records with these libraries or their own display components. See [creator earnings](/endpoints/analytics/analytics-earn) for the fields.

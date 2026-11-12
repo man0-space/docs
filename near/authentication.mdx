@@ -1,0 +1,29 @@
+---
+title: "Identity and wallet authorization"
+description: "How passkeys, email and OAuth connect a user to Man0\u2019s NEAR account flow."
+keywords: ["Man0", "NEAR", "Identity and wallet authorization"]
+---
+
+App authentication and wallet transaction authorization have separate responsibilities. Authentication verifies the user’s sign-in method and returns a Man0 API token. Wallet execution uses the P-256 owner associated with that identity to sign a relayed request.
+
+## Sign-in methods
+
+Passkeys use WebAuthn **ES256 / P-256** registration and authentication. Man0 stores the credential public key, transports and signature counter, then verifies the assertion against the expected challenge, origin and relying-party ID.
+
+Email sign-in uses a six-digit verification code with a **300-second** challenge. OAuth supports Google, Discord, GitHub and X when enabled in the app configuration. Telegram provides profile linking.
+
+Challenges are single-use: the backend consumes their cached record atomically with `GETDEL`. Passkey challenge records bind the mode, challenge, origin and RP, so registration and login responses use the challenge for their own flow.
+
+## Account identity
+
+After verification, the backend resolves or provisions the account for that identity. Its wallet-owner key and Universal Account initialization connect subsequent authorized operations to the same NEAR account.
+
+Man0 issues an **EdDSA-signed JWT** with its API issuer and audience and a 30-day expiry. Protected reads require that token; workflow writes and contract execution also check the account’s current policy acceptance.
+
+## Origin and session handling
+
+Browser authentication uses an allowed origin. HTTPS is required for deployed origins; local development uses the configured localhost origin and RP. OAuth callbacks return the result to the originating window.
+
+`GET /api/config` provides the sign-in methods to display. `GET /api/user` reads the account, and `DELETE /api/auth` revokes its authentication session. A [spending session](/developer/payments) has its own payment authorization token.
+
+See [developer authentication](/developer/authentication) for the request order.

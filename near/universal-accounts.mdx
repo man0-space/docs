@@ -1,0 +1,42 @@
+---
+title: "Universal Accounts"
+description: "Deterministic deposit and spending wallets backed by shared NEAR wallet code."
+keywords: ["Man0", "NEAR", "Universal Accounts"]
+---
+
+A Man0 identity maps to a P-256 wallet owner and two Universal Account initializations. Both use the same global wallet contract code, while their state, balances and access keys belong to separate accounts.
+
+| Subwallet | Role |
+| --- | --- |
+| `0` | Deposit wallet, used for account funds and user contract calls |
+| `1` | Spending wallet, used for authorized workflow payments |
+
+The spending initialization includes the facilitator’s Ed25519 access key. Approving a spending amount transfers USDC into that wallet; reclaiming returns unused USDC to the deposit wallet.
+
+## Address derivation
+
+Man0 serializes wallet state with the compressed P-256 owner key, subwallet ID, timeout, extension state and nonce state. It then wraps that state with the global contract identifier and access keys in Borsh `UniversalStateInit` bytes.
+
+```text
+wallet address = "0u" + CrockfordBase32(SHA3-256(UniversalStateInit))
+```
+
+Global code can be identified by an account ID or a 32-byte code hash. Extension names and access keys have a deterministic order, so the same initialization produces the same address.
+
+## Provisioning
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0b0f17","primaryTextColor":"#f8fafc","primaryBorderColor":"#38bdf8","lineColor":"#8b9bb4","secondaryColor":"#0e131c","tertiaryColor":"#090c12","edgeLabelBackground":"#020305","fontFamily":"Inter","fontSize":"16px"}}}%%
+flowchart TD
+  Identity["Verified app identity"] --> Owner["Wallet owner P-256 key"]
+  Owner --> Deposit["Subwallet 0<br/>Deposit"]
+  Owner --> Spend["Subwallet 1<br/>Spending + facilitator key"]
+  Code["Shared global wallet code"] --> Deposit
+  Code --> Spend
+  Deposit -->|Approve USDC| Spend
+  Spend -->|Reclaim unused USDC| Deposit
+```
+
+The backend derives the address before deploying it, checks existing account/code state and verifies the wallet’s `w_public_key`. Provisioning can use NEAR’s native `UniversalStateInit` transaction action, discriminant **15**, alongside the funding actions needed for initialization.
+
+Token preparation registers storage where required. Intents preparation also registers the wallet’s supported public key with the verifier. See [relayed execution](/near/execution) for signed requests and [Session](/app/session) for the user-facing spending controls.

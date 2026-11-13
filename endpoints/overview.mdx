@@ -1,0 +1,26 @@
+---
+title: "API reference"
+description: "Request schemas for the Man0 app, workflow runtime and NEAR operations."
+keywords: ["Man0", "API", "API reference"]
+---
+
+Base URL: **`https://api.man0.space`**.
+
+Public reads include configuration, categories, catalogs, published workflows and creator profiles. Account operations use the Man0 bearer token; workflow execution uses a Compose spending session or x402 authorization.
+
+Ordinary responses are JSON. Vibe, run and watch endpoints stream `application/x-ndjson`; read the [streaming guide](/developer/streaming) before implementing their event handling.
+
+| Area | Start here |
+| --- | --- |
+| Authentication | [Passkey options](/endpoints/authentication/passkey-options) |
+| Catalog | [Resources](/endpoints/catalog/catalog) |
+| Graph building | [Vibe](/endpoints/vibe-and-media/vibe) |
+| Saved workflows | [Save a workflow](/endpoints/workflows/workflow-save) |
+| Execution | [Run a workflow](/endpoints/execution/workflow-run) |
+| Analytics | [Creator earnings](/endpoints/analytics/analytics-earn) |
+| NEAR | [Wallet balances](/endpoints/near-accounts/balance) |
+| Intents | [Quote a route](/endpoints/intents/intents-quote) |
+
+Workflow writes use their `modified` timestamp in `If-Match`. The API returns errors as `{ error, code? }`, with thread/requirement fields where needed. Requests have a rate limit of **120 per minute**.
+
+The [OpenAPI specification](/openapi.json) contains shared request/response structures and registered OAuth aliases. The [developer guides](/developer/overview) explain how to combine these operations.

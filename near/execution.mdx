@@ -1,0 +1,35 @@
+---
+title: "Relayed contract execution"
+description: "Signed wallet requests, account initialization and nonce scheduling."
+keywords: ["Man0", "NEAR", "Relayed contract execution"]
+---
+
+Man0 submits contract calls through the user’s Universal Account. The API verifies the Man0 session, current consent and target-contract allowlist before building the wallet request.
+
+## Signed request
+
+The wallet message includes the signer account, chain/network identity, a random nonce, creation time, timeout and requested actions. An external call identifies its receiver, method arguments, deposit and gas.
+
+The commitment hashes the encoded request with SHA3-256 under the domain `NEAR_WALLET_CONTRACT/V1`. The backend signs that commitment with the account’s wallet-owner P-256 key and wraps it in a WebAuthn-formatted proof.
+
+The relayer calls `w_execute_signed` on the Universal Account, passing `msg` and `proof`. The wallet verifies the signed request before executing its external actions.
+
+## Account and token preparation
+
+Before submission, Man0 checks the resolved account on the target network. An uninitialized account can receive funding and the native state-initialization action in the same relayer transaction. Token transfers prepare the receiving account’s fungible-token storage when required.
+
+Contract reads use `POST /api/near/view`. Writes use `POST /api/near/execute`, which returns the transaction hash, signer, network, result and logs.
+
+| Write field | Unit |
+| --- | --- |
+| `deposit` | Decimal-string yoctoNEAR |
+| `gas` | Numeric gas units, up to 300 Tgas |
+| Fungible-token amount inside `args` | The token’s atomic units |
+
+## Relayer scheduling
+
+The relayer maintains **16 access-key slots**, chooses the least-loaded slot and queues submissions per key. This permits independent keys to submit concurrently while preserving each access key’s nonce order.
+
+Submission tracks the chain nonce and recovers from nonce conflicts with retries. The response comes from the transaction outcome, so clients can inspect the returned logs and transaction link.
+
+[Universal Accounts](/near/universal-accounts) explains address derivation; [endpoint reference](/endpoints/near-accounts/near-execute) defines the write request.

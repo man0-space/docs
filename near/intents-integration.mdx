@@ -1,0 +1,50 @@
+---
+title: "Integrate the Intents flow"
+description: "Quote a route, submit each funding leg and follow settlement."
+keywords: ["Man0", "NEAR", "Integrate the Intents flow"]
+---
+
+Use Man0’s authenticated Intents endpoints to build the same flow as **Fund / Swap**. Keep a route’s deposit address and memo with its funding leg throughout execution.
+
+## Quote and review
+
+`POST /api/near/intents/quote` takes `prompt`, `dry` and optional connected wallet addresses. The response includes the action, source/destination tokens, recipient, quote, funding legs and total quoted output.
+
+```json
+{
+  "prompt": "Deposit $5",
+  "dry": true,
+  "connectedWallets": []
+}
+```
+
+Use the preview to show the amount, wallets and destination. Request the executable route when the user continues. Preserve the returned amounts and instructions rather than recalculating a quote locally.
+
+## Submit the legs
+
+| Deposit type | Client flow |
+| --- | --- |
+| `INTENTS` | Send the leg’s `depositAddress` to `/api/near/intents/generate` |
+| EVM `ORIGIN_CHAIN` | Select the wallet/network, send the native or ERC-20 transfer, then call `/api/near/intents/deposit` |
+| Solana `ORIGIN_CHAIN` | Call `/svm-prepare`, ask the wallet to sign, then call `/svm-broadcast` |
+| NEAR `ORIGIN_CHAIN` | Submit the NEAR/token transfer and report its hash and sender to `/deposit` |
+
+EVM wallet discovery uses EIP-6963, with network selection and native/ERC-20 transfer handling. Solana preparation builds the transaction message, supports SPL and Token-2022 tokens, prepares associated token accounts as needed and includes the route memo.
+
+The Solana preparation response provides `transactionBase64` and `messageBase58`, with blockhash expiry information. Send the wallet-signed transaction bytes back as `signedTransactionBase64`.
+
+## Follow the status
+
+Poll `GET /api/near/intents/status` with `depositAddress` and, where needed, `depositMemo`.
+
+| Status | Display state |
+| --- | --- |
+| `PENDING_DEPOSIT` | Waiting for origin funds |
+| `KNOWN_DEPOSIT_TX` | Origin transaction detected |
+| `PROCESSING` | Settlement in progress |
+| `SUCCESS` | Transfer complete |
+| `INCOMPLETE_DEPOSIT` | Deposit needs attention |
+| `REFUNDED` | Funds returned to origin |
+| `FAILED` | Transfer failed |
+
+The response can include origin and destination transaction links. Refresh account balances after completion. See the [Intents endpoints](/endpoints/intents/intents-quote) for the exact request and response fields.

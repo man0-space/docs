@@ -1,0 +1,32 @@
+---
+title: "NFT methods and events"
+description: "Ownership, approvals, enumeration and NEP-297 logs."
+keywords: ["Man0", "NEAR", "NFT methods and events"]
+---
+
+Factory and Workflow expose the NEAR NFT methods used to read ownership and integrate transfers. Their token IDs are decimal strings in the NFT interface.
+
+| Standard | Methods |
+| --- | --- |
+| NEP-171 core | `nft_token`, `nft_transfer`, `nft_transfer_call`, `nft_resolve_transfer` |
+| NEP-177 metadata | `nft_metadata` and token metadata from `nft_token` |
+| NEP-178 approvals | `nft_approve`, `nft_revoke`, `nft_revoke_all`, `nft_is_approved` |
+| NEP-181 enumeration | `nft_total_supply`, `nft_tokens`, `nft_supply_for_owner`, `nft_tokens_for_owner` |
+
+Transfers and approval changes require the contract’s attached-deposit and permission checks. `nft_transfer_call` invokes the receiver and uses the private resolver to handle its acceptance result. Pagination uses `from_index` and `limit`; `from_index` uses a NEAR `U128` decimal string.
+
+## Domain records
+
+Factory events cover registration/minting, cloning, warping, licenses, price and wallet changes. Workflow events cover minting, membership, nesting, coordinator state, unit use, RFAs and leases. Reputation and Validation emit their record transitions and responses.
+
+The shared event helper writes NEP-297 records as log lines prefixed by `EVENT_JSON:`. NFT events use their standard envelope, with a standard name, version, event name and `data` array.
+
+```ts
+const events = logs
+  .filter(line => line.startsWith('EVENT_JSON:'))
+  .map(line => JSON.parse(line.slice('EVENT_JSON:'.length)));
+```
+
+A client can read logs from Man0’s contract execution response or a NEAR transaction outcome. Use the domain event’s IDs to update the matching record, and keep the transaction hash for an explorer link.
+
+Standards: [NFT core](https://nomicon.io/Standards/Tokens/NonFungibleToken/Core), [enumeration](https://nomicon.io/Standards/Tokens/NonFungibleToken/Enumeration), [events](https://nomicon.io/Standards/EventsFormat).

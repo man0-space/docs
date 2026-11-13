@@ -1,0 +1,27 @@
+---
+title: "Validation contract"
+description: "Request task validation and attach responses with evidence hashes and URIs."
+keywords: ["Man0", "NEAR", "Validation contract"]
+---
+
+Validation records requests for a registered agent and task, then lets validators attach their evidence. Requests keep the requester account, agent ID, validator type, task hash, URI, timestamps and response count.
+
+`request_validation` accepts `agent_id`, `validator_type`, `task_hash` and `request_uri`. When Factory verification is enabled, a cross-contract lookup checks the agent before the private callback creates the request.
+
+## Request states
+
+| State | Transition |
+| --- | --- |
+| `Pending` | A new request exists |
+| `Completed` | At least one validator has responded |
+| `Closed` | The requester closed the request |
+
+`respond_validation` adds a response with `valid`, `evidence_hash` and `evidence_uri`, and records the validator account and timestamp. It changes an open request to `Completed`; further responses can attach to that request until the requester calls `close_validation`.
+
+The contract rejects new responses after closure. Supplied hashes must encode 32 bytes, and URIs pass the shared metadata validation.
+
+## Read requests and evidence
+
+Use `get_validation_request` and `get_validation_response` for individual records. `get_agent_validation_requests` lists request IDs for an agent, while `get_validation_responses` lists response IDs for a request. `total_requests` and `total_responses` expose registry counts.
+
+The runtime’s [execution proof](/workflows/proof) records graph and inference hashes; validation responses attach a validator’s verdict and evidence to a task request. Use the IDs, hashes and URIs to connect the records in your client.

@@ -379,6 +379,92 @@
       }
     },
     "/api/consent": {
+      "get": {
+        "operationId": "consent_get",
+        "summary": "Read consent",
+        "description": "Read your acceptance record for the current policy.",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Consent",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "consent_accept",
         "summary": "Accept the policy",
@@ -479,92 +565,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ConsentInput"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "operationId": "consent_get",
-        "summary": "Read consent",
-        "description": "Read your acceptance record for the current policy.",
-        "tags": [
-          "Accounts"
-        ],
-        "security": [
-          {
-            "man0Auth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Consent",
-                  "nullable": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permission or current consent required.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Resource or policy changed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Request rate exceeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
               }
             }
           }
@@ -1759,7 +1759,7 @@
       "get": {
         "operationId": "wallet_links",
         "summary": "List linked wallets",
-        "description": "List the account’s linked external wallet addresses and registration status.",
+        "description": "List the account\u2019s linked external wallet addresses and registration status.",
         "tags": [
           "Accounts"
         ],
@@ -2446,7 +2446,737 @@
         }
       }
     },
+    "/api/vibe": {
+      "post": {
+        "operationId": "vibe",
+        "summary": "Build a workflow with Vibe",
+        "description": "Build or revise a workflow from a text prompt. Read newline-delimited JSON patches as they arrive. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream of newline-delimited JSON events.",
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/VibeStreamEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/vibeRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate-avatar": {
+      "post": {
+        "operationId": "avatar",
+        "summary": "Generate an avatar",
+        "description": "Generate and pin an avatar from a title, description and optional brand references. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mediaGenerateBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate-banner": {
+      "post": {
+        "operationId": "banner",
+        "summary": "Generate a banner",
+        "description": "Generate and pin a workflow banner from its description and optional brand references. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mediaGenerateBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ipfs/pin/json": {
+      "post": {
+        "operationId": "pin_json",
+        "summary": "Pin JSON to IPFS",
+        "description": "Pin JSON metadata to IPFS. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PinResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ipfsPinJsonBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ipfs/pin/file": {
+      "post": {
+        "operationId": "pin_file",
+        "summary": "Pin a file to IPFS",
+        "description": "Pin a base64 file to IPFS. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PinResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ipfsPinFileBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/uploads": {
+      "post": {
+        "operationId": "upload",
+        "summary": "Upload a run attachment",
+        "description": "Upload a run attachment of up to 20 MiB. The response includes its URL, CID, classified type and readable text when available. Requires current consent.",
+        "tags": [
+          "Vibe and media"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds the size limit. Upload attachments accept at most 20 MB of decoded file bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uploadAttachmentBody"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/workflows": {
+      "get": {
+        "operationId": "workflows_list",
+        "summary": "List your workflows",
+        "description": "List your saved drafts and published workflows. Requires current consent.",
+        "tags": [
+          "Workflows"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Listing"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "workflow_save",
         "summary": "Save a workflow",
@@ -2563,29 +3293,24 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/workflows/{id}": {
       "get": {
-        "operationId": "workflows_list",
-        "summary": "List your workflows",
-        "description": "List your saved drafts and published workflows. Requires current consent.",
+        "operationId": "workflow_get",
+        "summary": "Read a workflow",
+        "description": "Read a published workflow. Include your Man0 token to read your own draft.",
         "tags": [
           "Workflows"
         ],
-        "security": [
-          {
-            "man0Auth": []
-          }
-        ],
+        "security": [],
         "responses": {
           "200": {
             "description": "Success.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Listing"
-                  }
+                  "$ref": "#/components/schemas/Listing"
                 }
               }
             }
@@ -2650,10 +3375,19 @@
               }
             }
           }
-        }
-      }
-    },
-    "/api/workflows/{id}": {
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
       "delete": {
         "operationId": "workflow_delete",
         "summary": "Delete a workflow",
@@ -2752,105 +3486,13 @@
             "description": "Latest modified timestamp of the saved resource."
           }
         ]
-      },
-      "get": {
-        "operationId": "workflow_get",
-        "summary": "Read a workflow",
-        "description": "Read a published workflow. Include your Man0 token to read your own draft.",
-        "tags": [
-          "Workflows"
-        ],
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Listing"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permission or current consent required.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Resource or policy changed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Request rate exceeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
       }
     },
     "/api/workflows/{id}/publish": {
       "post": {
         "operationId": "workflow_publish",
         "summary": "Publish a workflow",
-        "description": "Publish your saved workflow with categories, description and a 1–3% creator fee. Include the latest modified timestamp in If-Match. Requires current consent.",
+        "description": "Publish your saved workflow with categories, description and a 1\u20133% creator fee. Include the latest modified timestamp in If-Match. Requires current consent.",
         "tags": [
           "Workflows"
         ],
@@ -3061,84 +3703,6 @@
       }
     },
     "/api/draft": {
-      "delete": {
-        "operationId": "draft_delete",
-        "summary": "Clear the Canvas draft",
-        "description": "Clear the current unsaved Canvas draft. Requires current consent.",
-        "tags": [
-          "Drafts"
-        ],
-        "security": [
-          {
-            "man0Auth": []
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Success."
-          },
-          "400": {
-            "description": "Invalid request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permission or current consent required.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Resource or policy changed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Request rate exceeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "get": {
         "operationId": "draft_get",
         "summary": "Read the Canvas draft",
@@ -3341,6 +3905,84 @@
             }
           }
         }
+      },
+      "delete": {
+        "operationId": "draft_delete",
+        "summary": "Clear the Canvas draft",
+        "description": "Clear the current unsaved Canvas draft. Requires current consent.",
+        "tags": [
+          "Drafts"
+        ],
+        "security": [
+          {
+            "man0Auth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or current consent required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource or policy changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rate exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/draft/run": {
@@ -3485,7 +4127,7 @@
       "post": {
         "operationId": "workflow_run",
         "summary": "Run a workflow",
-        "description": "Run a published workflow with a spending session or x402 payment. An unpublished workflow requires its owner’s session.",
+        "description": "Run a published workflow with a spending session or x402 payment. An unpublished workflow requires its owner\u2019s session.",
         "tags": [
           "Execution"
         ],
@@ -4310,7 +4952,7 @@
       "post": {
         "operationId": "deposit_ready",
         "summary": "Prepare a deposit wallet",
-        "description": "Prepare the account’s deposit wallet and token storage. Requires current consent.",
+        "description": "Prepare the account\u2019s deposit wallet and token storage. Requires current consent.",
         "tags": [
           "NEAR accounts"
         ],
@@ -4714,7 +5356,7 @@
       "post": {
         "operationId": "near_execute",
         "summary": "Execute a NEAR method",
-        "description": "Execute an allowed contract method through the account’s Universal Account. deposit uses yoctoNEAR; gas is a gas-unit count. Requires current consent.",
+        "description": "Execute an allowed contract method through the account\u2019s Universal Account. deposit uses yoctoNEAR; gas is a gas-unit count. Requires current consent.",
         "tags": [
           "NEAR accounts"
         ],
@@ -4928,7 +5570,7 @@
       "post": {
         "operationId": "intents_generate",
         "summary": "Submit an Intents route",
-        "description": "Sign and submit the stored INTENTS-source route. Use the route’s depositAddress. Requires current consent.",
+        "description": "Sign and submit the stored INTENTS-source route. Use the route\u2019s depositAddress. Requires current consent.",
         "tags": [
           "Intents"
         ],
@@ -5142,7 +5784,7 @@
       "get": {
         "operationId": "intents_status",
         "summary": "Read an Intents status",
-        "description": "Read a deposit route’s current settlement status and available transaction links.",
+        "description": "Read a deposit route\u2019s current settlement status and available transaction links.",
         "tags": [
           "Intents"
         ],
